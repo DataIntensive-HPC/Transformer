@@ -53,16 +53,16 @@ def factorized_attention(q_I, W_A, W_B, W_Bt, W_At, v, d_k, mask=None, dropout=N
     #q_I = 
 
     #Calculate I * A
-    IA = torch.einsum('bij,bjk->bik', [q_I, W_A] )
+    IA = torch.einsum('bij,jk->bik', [q_I, W_A] )
  
     #Calculate IA * B
-    IAB = torch.einsum('bij,bjk->bik', [IA, W_B] )
+    IAB = torch.einsum('bij,jk->bik', [IA, W_B] )
 
     #Calculate IAB*Bt
-    IABBt = torch.einsum('bij,bjk->bik', [IAB, W_Bt])
+    IABBt = torch.einsum('bij,jk->bik', [IAB, W_Bt])
 
     #Calculate IABBt * At
-    IABBtAt = torch.einsum('bij,bjk->bik' , [IABBt * W_At])
+    IABBtAt = torch.einsum('bij,jk->bik' , [IABBt , W_At])
 
     #Calculate I^T
     It = q_I.transpose(-2, -1)

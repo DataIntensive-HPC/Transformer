@@ -98,7 +98,7 @@ def factorized_attention(q_I, W_A, W_B, W_Bt, W_At, qt, v, d_k, mask=None, dropo
     print(" v size")
     print(v.size())    
     #output = torch.matmul(scores, v)
-    #output = torch.einsum()
+    output = torch.einsum('kabm,kbmj->kbaj')
     return output
 
 

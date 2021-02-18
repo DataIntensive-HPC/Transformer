@@ -116,8 +116,9 @@ class FactorizedMultiHeadAttention(nn.Module):
     def forward(self, q, k, v, mask=None):
         
         bs = q.size(0)
-        print("bs is ", bs)
-        
+        print("bs is ")
+        print(bs)
+
         # perform linear operation and split into N heads
 
         #k = self.k_linear(k).view(bs, -1, self.h, self.d_k)

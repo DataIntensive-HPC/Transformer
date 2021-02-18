@@ -85,7 +85,11 @@ def factorized_attention(q_I, W_A, W_B, W_Bt, W_At, v, d_k, mask=None, dropout=N
     #Calculate I^T
     It = q_I.transpose(-2, -1)
 
-    scores = torch.einsum('bij,bjk->bik' , [IABBtAt, It])
+    scores = torch.einsum('kabj,kjbi->kabi' , [IABBtAt, It])
+
+    print("score")
+    print(scores.size())
+
     scores = F.softmax(scores, dim=-1)
     
     if dropout is not None:

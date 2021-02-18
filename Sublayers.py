@@ -98,10 +98,10 @@ def factorized_attention(q_I, W_A, W_B, W_Bt, W_At, qt, v, d_k, mask=None, dropo
     print(" v size")
     print(v.size())    
     #output = torch.matmul(scores, v)
-    output = torch.einsum('kabm,kbmj->kbaj')
+    output = torch.einsum('kabm,kbmj->kbaj', [scores, v])
     return output
 
-
+ 
 
 class FactorizedMultiHeadAttention(nn.Module):
     def __init__(self, heads, d_model, factorized_k=32, dropout = 0.1):

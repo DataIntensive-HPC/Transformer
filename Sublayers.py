@@ -138,13 +138,13 @@ class FactorizedMultiHeadAttention(nn.Module):
 
         #self.W_A = self.W_A.view(bs, -1, self.h, self.d_fk)
         #self.W_B = self.W_B.view(bs, -1, self.h, self.d_fk)
-        W_a = self.W_A.view(self.h, self.d_fk,-1)
-        W_b = self.W_A.view(self.h, -1, self.d_fk)
+        W_a = self.W_A.view(self.h, self.d_k,-1)
+        W_b = self.W_A.view(self.h, -1, self.d_k)
 
         #self.W_A2 = self.W_A2.view(bs, -1, self.h, self.d_fk)
         #self.W_B2 = self.W_B2.view(bs, -1, self.h, self.d_fk)
-        W_a2 = self.W_A2.view(self.h, self.d_fk,-1)
-        W_b2 = self.W_A2.view(self.h, -1, self.d_fk)
+        W_a2 = self.W_A2.view(self.h, self.d_k,-1)
+        W_b2 = self.W_A2.view(self.h, -1, self.d_k)
 
 
         q =q.view(bs, -1, self.h, self.d_k)

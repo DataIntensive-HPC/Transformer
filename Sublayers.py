@@ -51,42 +51,42 @@ def factorized_attention(q_I, W_A, W_B, W_Bt, W_At, qt, v, d_k, mask=None, dropo
     #bs=q_I.size(0)
 
     #q_I = 
-    print("q_I matrix size")
-    print(q_I.size())
+    #print("q_I matrix size")
+    #print(q_I.size())
 
-    print("WA matrix size")
-    print(W_A.size())
+    #print("WA matrix size")
+    #print(W_A.size())
 
     #Calculate I * A
     IA = torch.einsum('kabc,bcj->kabj', [q_I, W_A] )
  
-    print("IA Matrix size")
-    print(IA.size())
+    #print("IA Matrix size")
+    #print(IA.size())
 
     #Calculate IA * B
     IAB = torch.einsum('kabj,bji->kabi', [IA, W_B] )
 
-    print("IAB Matrix size")
-    print(IAB.size())
+    #print("IAB Matrix size")
+    #print(IAB.size())
 
 
     #Calculate IAB*Bt
     IABBt = torch.einsum('kabi,bim->kabm', [IAB, W_Bt])
 
-    print("IABBt Matrix size")
-    print(IABBt.size())
+    #print("IABBt Matrix size")
+    #print(IABBt.size())
 
     #Calculate IABBt * At
     IABBtAt = torch.einsum('kabm,bmj->kabj' , [IABBt , W_At])
 
-    print("IABBtAt Matrix size")
-    print(IABBtAt.size())
+    #print("IABBtAt Matrix size")
+    #print(IABBtAt.size())
 
     #Calculate I^T
     #It = q_I.transpose(-2, -1)
 
-    print("qt Matrix size")
-    print(qt.size())
+    #print("qt Matrix size")
+    #print(qt.size())
 
     #k is batch size b is #heads
     # Score attention matrix
@@ -100,17 +100,17 @@ def factorized_attention(q_I, W_A, W_B, W_Bt, W_At, qt, v, d_k, mask=None, dropo
     if dropout is not None:
         scores = dropout(scores)
 
-    print( " last score size")
-    print(scores.size())
+    #print( " last score size")
+    #print(scores.size())
         
-    print(" v size")
-    print(v.size())    
+    #print(" v size")
+    #print(v.size())    
 
     output = torch.matmul(scores, v)
     #output = torch.einsum('kbam,kbmi->kbai', [scores, v])
 
-    print(" output size")
-    print(output.size())      
+    #print(" output size")
+    #print(output.size())      
     return output
 
  
@@ -150,11 +150,11 @@ class FactorizedMultiHeadAttention(nn.Module):
     def forward(self, q, k, v, mask=None):
         
         bs = q.size(0)
-        print("bs is ")
-        print(bs)
+        #print("bs is ")
+        #print(bs)
 
-        print("q size is")
-        print(q.size())
+        #print("q size is")
+        #print(q.size())
 
         # perform linear operation and split into N heads
 
@@ -162,8 +162,8 @@ class FactorizedMultiHeadAttention(nn.Module):
         #q = self.q_linear(q).view(bs, -1, self.h, self.d_k)
         v = self.q_linear(q).view(bs, -1, self.h, self.d_k)
 
-        print("v size is")
-        print(v.size())
+        #print("v size is")
+        #print(v.size())
 
         # transpose to get dimensions bs * N * sl * d_model
         #k = k.transpose(1,2)
@@ -190,13 +190,13 @@ class FactorizedMultiHeadAttention(nn.Module):
         #qt = qt.view(bs, -1, self.d_k)
         qt = qt.view(bs, self.h, self.d_k, -1)
 
-        print("qt size is")
-        print(qt.size())
+        #print("qt size is")
+        #print(qt.size())
 
         q =q.view(bs, -1, self.h, self.d_k)
 
-        print("q size after view is")
-        print(q.size())
+        #print("q size after view is")
+        #print(q.size())
 
         scores = factorized_attention(q, W_a, W_b, W_a2, W_b2 ,qt, v, self.d_k, mask, self.dropout)
 

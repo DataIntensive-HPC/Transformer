@@ -53,21 +53,21 @@ def factorized_Attention(q_I, W_A, W_B, W_Bt, W_At, v, mask=None, dropout=None):
     #q_I = 
 
     #Calculate I * A
-    IA = torch.einsum('ij,jk->ik', [q_I, W_A] )
+    IA = torch.einsum('bij,bjk->bik', [q_I, W_A] )
  
     #Calculate IA * B
-    IAB = torch.einsum('ij,jk->ik', [IA, W_B] )
+    IAB = torch.einsum('bij,bjk->bik', [IA, W_B] )
 
     #Calculate IAB*Bt
-    IABBt = torch.einsum('ij,jk->ik', [IAB, W_Bt])
+    IABBt = torch.einsum('bij,bjk->bik', [IAB, W_Bt])
 
     #Calculate IABBt * At
-    IABBtAt = torch.einsum('ij,jk->ik' , [IABBt * W_At])
+    IABBtAt = torch.einsum('bij,bjk->bik' , [IABBt * W_At])
 
     #Calculate I^T
     It = q_I.transpose(-2, -1)
 
-    scores = torch.einsum('ij,jk->ik' , [IABBtAt, It])
+    scores = torch.einsum('bij,bjk->bik' , [IABBtAt, It])
     scores = F.softmax(scores, dim=-1)
     
     if dropout is not None:
@@ -84,8 +84,11 @@ class FactorizedMultiHeadAttention(nn.Module):
         
         self.d_model = d_model
         self.d_k = d_model // heads
+
+
         self.h = heads
-        self.k= 32
+        self.Factorized_k= 32
+        self.d_fk= Factorized_k // heads
 
         #self.q_linear = nn.Linear(d_model, d_model)
         self.v_linear = nn.Linear(d_model, d_model)
@@ -95,12 +98,12 @@ class FactorizedMultiHeadAttention(nn.Module):
         # W2 = A2 * B2 Factorized Version of W for K
 
         # Factorized Weight Matrix for Q 
-        self.W_A = nn.Parameter(torch.rand(d_model, k, requires_grad=True)
-        self.W_B = nn.Parameter(torch.rand(k, d_model), requires_grad=True)
+        self.W_A = nn.Parameter(torch.rand(d_model, Factorized_k, requires_grad=True)
+        self.W_B = nn.Parameter(torch.rand(Factorized_k, d_model), requires_grad=True)
 
         # Factorized Weight Matrix for K
-        self.W_A2 = nn.Parameter(torch.rand(d_model, k), requires_grad=True)
-        self.W_B2 = nn.Parameter(torch.rand(k, d_model), requires_grad=True)
+        self.W_A2 = nn.Parameter(torch.rand(d_model, Factorized_k), requires_grad=True)
+        self.W_B2 = nn.Parameter(torch.rand(Factorized_k, d_model), requires_grad=True)
 
         self.dropout = nn.Dropout(dropout)
 
@@ -126,7 +129,15 @@ class FactorizedMultiHeadAttention(nn.Module):
         # calculate attention using function we will define next
         #scores = attention(q, k, v, self.d_k, mask, self.dropout)
 
+        self.W_A = self.W_A.view(bs, -1, self.h, self.d_fk)
+        self.W_B = self.W_B.view(bs, -1, self.h, self.d_fk)
+
+        self.W_A2 = self.W_A2.view(bs, -1, self.h, self.d_fk)
+        self.W_B2 = self.W_B2.view(bs, -1, self.h, self.d_fk)
+
         q =q.view(bs, -1, self.h, self.d_k)
+
+
         scores = attention(q, self.W_A, self.W_B, self.W_A2, self.W_B2 , v, self.d_k, mask, self.dropout)
 
         # concatenate heads and put through final linear layer

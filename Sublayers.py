@@ -94,6 +94,9 @@ def factorized_attention(q_I, W_A, W_B, W_Bt, W_At, qt, v, d_k, mask=None, dropo
     
     if dropout is not None:
         scores = dropout(scores)
+
+    print( " last score size")
+    print(scores.size())
         
     print(" v size")
     print(v.size())    
@@ -165,6 +168,7 @@ class FactorizedMultiHeadAttention(nn.Module):
 
         #self.W_A = self.W_A.view(bs, -1, self.h, self.d_fk)
         #self.W_B = self.W_B.view(bs, -1, self.h, self.d_fk)
+
         W_a = self.W_A.view(self.h, self.d_k,-1)
         W_b = self.W_A.view(self.h, -1, self.d_k)
 

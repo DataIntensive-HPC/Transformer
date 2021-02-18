@@ -12,10 +12,13 @@ def train_model(model, opt):
     
     print("training model...")
     model.train()
+
+    NumberOfParameter=count_parameters(model)
+
     start = time.time()
     if opt.checkpoint > 0:
         cptime = time.time()
-                 
+
     for epoch in range(opt.epochs):
 
         total_loss = 0
@@ -63,8 +66,8 @@ def train_model(model, opt):
                 cptime = time.time()
    
    
-        print("%dm: epoch %d [%s%s]  %d%%  loss = %.3f\nepoch %d complete, loss = %.03f" %\
-        ((time.time() - start)//60, epoch + 1, "".join('#'*(100//5)), "".join(' '*(20-(100//5))), 100, avg_loss, epoch + 1, avg_loss))
+        print("%dm: epoch %d [%s%s]  %d%%  loss = %.3f\nepoch %d complete, loss = %.03f NumberOfPar= %d" %\
+        ((time.time() - start)//60, epoch + 1, "".join('#'*(100//5)), "".join(' '*(20-(100//5))), 100, avg_loss, epoch + 1, avg_loss, NumberOfParameter))
 
 
 

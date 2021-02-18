@@ -138,19 +138,19 @@ class FactorizedMultiHeadAttention(nn.Module):
 
         #self.W_A = self.W_A.view(bs, -1, self.h, self.d_fk)
         #self.W_B = self.W_B.view(bs, -1, self.h, self.d_fk)
-        self.W_A = self.W_A.view(self.h, self.d_fk,-1)
-        self.W_B = self.W_A.view(self.h, -1, self.d_fk)
+        W_a = self.W_A.view(self.h, self.d_fk,-1)
+        W_b = self.W_A.view(self.h, -1, self.d_fk)
 
         #self.W_A2 = self.W_A2.view(bs, -1, self.h, self.d_fk)
         #self.W_B2 = self.W_B2.view(bs, -1, self.h, self.d_fk)
-        self.W_A2 = self.W_A2.view(self.h, self.d_fk,-1)
-        self.W_B2 = self.W_A2.view(self.h, -1, self.d_fk)
+        W_a2 = self.W_A2.view(self.h, self.d_fk,-1)
+        W_b2 = self.W_A2.view(self.h, -1, self.d_fk)
 
 
         q =q.view(bs, -1, self.h, self.d_k)
 
 
-        scores = factorized_attention(q, self.W_A, self.W_B, self.W_A2, self.W_B2 , v, self.d_k, mask, self.dropout)
+        scores = factorized_attention(q, W_a, W_b, W_a2, W_b2 , v, self.d_k, mask, self.dropout)
 
         # concatenate heads and put through final linear layer
         concat = scores.transpose(1,2).contiguous()\

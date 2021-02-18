@@ -79,21 +79,34 @@ def factorized_Attention(q_I, W_A, W_B, W_Bt, W_At, v, mask=None, dropout=None):
 
 
 class FactorizedMultiHeadAttention(nn.Module):
-    def __init__(self, heads, d_model, dropout = 0.1):
+    def __init__(self, heads, d_model, Factorized_k, dropout = 0.1):
         super().__init__()
         
         self.d_model = d_model
         self.d_k = d_model // heads
         self.h = heads
-        
+        self.k= Factorized_k
 
-        self.q_linear = nn.Linear(d_model, d_model)
+        #self.q_linear = nn.Linear(d_model, d_model)
         self.v_linear = nn.Linear(d_model, d_model)
-        self.k_linear = nn.Linear(d_model, d_model)
+        #self.k_linear = nn.Linear(d_model, d_model)
         
+        # W1 = A * B Factorized Version of W for Q
+        # W2 = A2 * B2 Factorized Version of W for K
+
+        # Factorized Weight Matrix for Q 
+        self.W_A = nn.Parameter(torch.rand(d_model, Factorized_k), requires_grad=True)
+        self.W_B = nn.Parameter(torch.rand(Factorized_k, d_model), requires_grad=True)
+
+        # Factoruzed Weight Matrix for K
+        self.W_A2 = nn.Parameter(torch.rand(d_model, Factorized_k), requires_grad=True)
+        self.W_B2 = nn.Parameter(torch.rand(Factorized_k, d_model), requires_grad=True)
+
         self.dropout = nn.Dropout(dropout)
+
         self.out = nn.Linear(d_model, d_model)
     
+
     def forward(self, q, k, v, mask=None):
         
         bs = q.size(0)
@@ -111,6 +124,7 @@ class FactorizedMultiHeadAttention(nn.Module):
 
         # calculate attention using function we will define next
         scores = attention(q, k, v, self.d_k, mask, self.dropout)
+        
         # concatenate heads and put through final linear layer
         concat = scores.transpose(1,2).contiguous()\
         .view(bs, -1, self.d_model)

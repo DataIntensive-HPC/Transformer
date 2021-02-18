@@ -55,6 +55,8 @@ def factorized_attention(q_I, W_A, W_B, W_Bt, W_At, v, d_k, mask=None, dropout=N
     print(q_I.size())
 
     print("WA matrix size")
+    print(W_A.size())
+
     #Calculate I * A
     IA = torch.einsum('bij,jk->bik', [q_I, W_A] )
  
@@ -140,7 +142,7 @@ class FactorizedMultiHeadAttention(nn.Module):
         #self.W_A2 = self.W_A2.view(bs, -1, self.h, self.d_fk)
         #self.W_B2 = self.W_B2.view(bs, -1, self.h, self.d_fk)
 
-        q =q.view(bs, -1, self.h, self.d_k)
+        #q =q.view(bs, -1, self.h, self.d_k)
 
 
         scores = factorized_attention(q, self.W_A, self.W_B, self.W_A2, self.W_B2 , v, self.d_k, mask, self.dropout)

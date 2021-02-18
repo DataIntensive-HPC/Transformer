@@ -14,12 +14,12 @@ def nopeak_mask(size, opt):
 
 def create_masks(src, trg, opt):
     
-    src_mask = (src != opt.src_pad).unsqueeze(-2)
+    src_mask = (src != opt.src_pad).unsqueeze(-2).to(opt.device)
 
     if trg is not None:
-        trg_mask = (trg != opt.trg_pad).unsqueeze(-2)
+        trg_mask = (trg != opt.trg_pad).unsqueeze(-2).to(opt.device)
         size = trg.size(1) # get seq_len for matrix
-        np_mask = nopeak_mask(size, opt)
+        np_mask = nopeak_mask(size, opt).to(opt.device)
         if trg.is_cuda:
             np_mask.cuda()
         trg_mask = trg_mask & np_mask

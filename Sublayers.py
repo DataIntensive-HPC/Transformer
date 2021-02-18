@@ -88,7 +88,7 @@ class FactorizedMultiHeadAttention(nn.Module):
 
         self.h = heads
         self.Factorized_k= 32
-        self.d_fk= Factorized_k // heads
+        self.d_fk= self.Factorized_k // heads
 
         #self.q_linear = nn.Linear(d_model, d_model)
         self.v_linear = nn.Linear(d_model, d_model)
@@ -98,7 +98,7 @@ class FactorizedMultiHeadAttention(nn.Module):
         # W2 = A2 * B2 Factorized Version of W for K
 
         # Factorized Weight Matrix for Q 
-        self.W_A = nn.Parameter(torch.rand(d_model, Factorized_k, requires_grad=True)
+        self.W_A = nn.Parameter(torch.rand(d_model, Factorized_k), requires_grad=True)
         self.W_B = nn.Parameter(torch.rand(Factorized_k, d_model), requires_grad=True)
 
         # Factorized Weight Matrix for K

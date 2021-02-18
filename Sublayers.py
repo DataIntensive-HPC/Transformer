@@ -167,7 +167,7 @@ class FactorizedMultiHeadAttention(nn.Module):
         W_b2 = self.W_A2.view(self.h, -1, self.d_k)
 
 
-        qt=q.transpose()
+        #qt=q.transpose()
         q =q.view(bs, -1, self.h, self.d_k)
 
 

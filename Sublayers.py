@@ -85,6 +85,9 @@ def factorized_attention(q_I, W_A, W_B, W_Bt, W_At, qt, v, d_k, mask=None, dropo
     #Calculate I^T
     #It = q_I.transpose(-2, -1)
 
+    print("qt Matrix size")
+    print(qt.size())
+
     scores = torch.einsum('kabj,kbjm->kjbm' , [IABBtAt, qt])
 
     print("score")

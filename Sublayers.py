@@ -129,11 +129,11 @@ class FactorizedMultiHeadAttention(nn.Module):
         # calculate attention using function we will define next
         #scores = attention(q, k, v, self.d_k, mask, self.dropout)
 
-        self.W_A = self.W_A.view(bs, -1, self.h, self.d_fk)
-        self.W_B = self.W_B.view(bs, -1, self.h, self.d_fk)
+        #self.W_A = self.W_A.view(bs, -1, self.h, self.d_fk)
+        #self.W_B = self.W_B.view(bs, -1, self.h, self.d_fk)
 
-        self.W_A2 = self.W_A2.view(bs, -1, self.h, self.d_fk)
-        self.W_B2 = self.W_B2.view(bs, -1, self.h, self.d_fk)
+        #self.W_A2 = self.W_A2.view(bs, -1, self.h, self.d_fk)
+        #self.W_B2 = self.W_B2.view(bs, -1, self.h, self.d_fk)
 
         q =q.view(bs, -1, self.h, self.d_k)
 

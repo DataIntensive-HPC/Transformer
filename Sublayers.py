@@ -169,6 +169,7 @@ class FactorizedMultiHeadAttention(nn.Module):
 
         qt = torch.einsum("abc->acb", [q])
         #qt = qt.view(bs, -1, self.d_k)
+        qt = qt.view(bs, self.h, self.d_k, -1)
 
         print("qt size is")
         print(qt.size())

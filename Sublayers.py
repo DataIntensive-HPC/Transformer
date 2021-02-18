@@ -79,13 +79,13 @@ def factorized_Attention(q_I, W_A, W_B, W_Bt, W_At, v, mask=None, dropout=None):
 
 
 class FactorizedMultiHeadAttention(nn.Module):
-    def __init__(self, heads, d_model, Factorized_k, dropout = 0.1):
+    def __init__(self, heads, d_model, dropout = 0.1):
         super().__init__()
         
         self.d_model = d_model
         self.d_k = d_model // heads
         self.h = heads
-        self.k= Factorized_k
+        self.k= 32
 
         #self.q_linear = nn.Linear(d_model, d_model)
         self.v_linear = nn.Linear(d_model, d_model)
@@ -95,12 +95,12 @@ class FactorizedMultiHeadAttention(nn.Module):
         # W2 = A2 * B2 Factorized Version of W for K
 
         # Factorized Weight Matrix for Q 
-        self.W_A = nn.Parameter(torch.rand(d_model, Factorized_k), requires_grad=True)
-        self.W_B = nn.Parameter(torch.rand(Factorized_k, d_model), requires_grad=True)
+        self.W_A = nn.Parameter(torch.rand(d_model, k, requires_grad=True)
+        self.W_B = nn.Parameter(torch.rand(k, d_model), requires_grad=True)
 
-        # Factoruzed Weight Matrix for K
-        self.W_A2 = nn.Parameter(torch.rand(d_model, Factorized_k), requires_grad=True)
-        self.W_B2 = nn.Parameter(torch.rand(Factorized_k, d_model), requires_grad=True)
+        # Factorized Weight Matrix for K
+        self.W_A2 = nn.Parameter(torch.rand(d_model, k), requires_grad=True)
+        self.W_B2 = nn.Parameter(torch.rand(k, d_model), requires_grad=True)
 
         self.dropout = nn.Dropout(dropout)
 
@@ -112,28 +112,29 @@ class FactorizedMultiHeadAttention(nn.Module):
         bs = q.size(0)
         
         # perform linear operation and split into N heads
-        k = self.k_linear(k).view(bs, -1, self.h, self.d_k)
-        q = self.q_linear(q).view(bs, -1, self.h, self.d_k)
+
+        #k = self.k_linear(k).view(bs, -1, self.h, self.d_k)
+        #q = self.q_linear(q).view(bs, -1, self.h, self.d_k)
         v = self.v_linear(v).view(bs, -1, self.h, self.d_k)
-        
+
         # transpose to get dimensions bs * N * sl * d_model
-        k = k.transpose(1,2)
-        q = q.transpose(1,2)
+        #k = k.transpose(1,2)
+        #q = q.transpose(1,2)
         v = v.transpose(1,2)
         
 
         # calculate attention using function we will define next
-        scores = attention(q, k, v, self.d_k, mask, self.dropout)
-        
+        #scores = attention(q, k, v, self.d_k, mask, self.dropout)
+
+        q =q.view(bs, -1, self.h, self.d_k)
+        scores = attention(q, self.W_A, self.W_B, self.W_A2, self.W_B2 , v, self.d_k, mask, self.dropout)
+
         # concatenate heads and put through final linear layer
         concat = scores.transpose(1,2).contiguous()\
         .view(bs, -1, self.d_model)
         output = self.out(concat)
     
         return output
-
-
-
 
 
 class MultiHeadAttention(nn.Module):

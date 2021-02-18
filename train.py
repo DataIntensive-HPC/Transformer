@@ -76,7 +76,7 @@ def main():
     parser.add_argument('-n_layers', type=int, default=6)
     parser.add_argument('-heads', type=int, default=8)
     parser.add_argument('-dropout', type=int, default=0.1)
-    parser.add_argument('-factorizedK', type=int, default=32)
+    parser.add_argument('-factorized_k', type=int, default=32)
     parser.add_argument('-batchsize', type=int, default=1500)
     parser.add_argument('-printevery', type=int, default=100)
     parser.add_argument('-lr', type=int, default=0.0001)
@@ -95,7 +95,7 @@ def main():
     read_data(opt)
     SRC, TRG = create_fields(opt)
     opt.train = create_dataset(opt, SRC, TRG)
-    
+
     model = get_model(opt, len(SRC.vocab), len(TRG.vocab))
 
     opt.optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr, betas=(0.9, 0.98), eps=1e-9)

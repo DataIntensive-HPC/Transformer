@@ -41,7 +41,7 @@ def attention(q, k, v, d_k, mask=None, dropout=None):
     output = torch.matmul(scores, v)
     return output
 
-def factorized_attention(q_I, W_A, W_B, W_Bt, W_At, v, d_k, mask=None, dropout=None):
+def factorized_attention(q_I, W_A, W_B, W_Bt, W_At, v, q_IT, d_k, mask=None, dropout=None):
 
     #Left To Right Operation
 
@@ -138,6 +138,9 @@ class FactorizedMultiHeadAttention(nn.Module):
         print("bs is ")
         print(bs)
 
+        print("q size is")
+        print(q.size())
+
         # perform linear operation and split into N heads
 
         #k = self.k_linear(k).view(bs, -1, self.h, self.d_k)
@@ -164,7 +167,9 @@ class FactorizedMultiHeadAttention(nn.Module):
         W_b2 = self.W_A2.view(self.h, -1, self.d_k)
 
 
+        qt=q.transpose()
         q =q.view(bs, -1, self.h, self.d_k)
+
 
 
         scores = factorized_attention(q, W_a, W_b, W_a2, W_b2 , v, self.d_k, mask, self.dropout)

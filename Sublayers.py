@@ -95,7 +95,10 @@ def factorized_attention(q_I, W_A, W_B, W_Bt, W_At, qt, v, d_k, mask=None, dropo
     if dropout is not None:
         scores = dropout(scores)
         
-    output = torch.matmul(scores, v)
+    print(" v size")
+    print(v.size())    
+    #output = torch.matmul(scores, v)
+    #output = torch.einsum()
     return output
 
 

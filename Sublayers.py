@@ -92,8 +92,8 @@ def factorized_attention(q_I, W_A, W_B, W_Bt, W_At, qt, v, d_k, mask=None, dropo
     # Score attention matrix
     scores = torch.einsum('kabj,kbjm->kbam' , [IABBtAt, qt])
 
-    print("score")
-    print(scores.size())
+    #print("score")
+    #print(scores.size())
 
     scores = F.softmax(scores, dim=-1)
     
@@ -160,7 +160,7 @@ class FactorizedMultiHeadAttention(nn.Module):
 
         #k = self.k_linear(k).view(bs, -1, self.h, self.d_k)
         #q = self.q_linear(q).view(bs, -1, self.h, self.d_k)
-        v = self.v_linear(v).view(bs, -1, self.h, self.d_k)
+        v = self.q_linear(q).view(bs, -1, self.h, self.d_k)
 
         print("v size is")
         print(v.size())

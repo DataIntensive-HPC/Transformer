@@ -127,8 +127,8 @@ class FactorizedMultiHeadAttention(nn.Module):
         self.factorized_k = factorized_k
         self.d_fk= factorized_k // heads
 
-        #self.q_linear = nn.Linear(d_model, d_model)
-        self.v_linear = nn.Linear(d_model, d_model)
+        self.q_linear = nn.Linear(d_model, d_model)
+        #self.v_linear = nn.Linear(d_model, d_model)
         #self.k_linear = nn.Linear(d_model, d_model)
         
         # W1 = A * B Factorized Version of W for Q

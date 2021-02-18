@@ -53,6 +53,8 @@ def factorized_attention(q_I, W_A, W_B, W_Bt, W_At, v, d_k, mask=None, dropout=N
     #q_I = 
     print("q_I matrix size")
     print(q_I.size())
+
+    print("WA matrix size")
     #Calculate I * A
     IA = torch.einsum('bij,jk->bik', [q_I, W_A] )
  
@@ -114,6 +116,7 @@ class FactorizedMultiHeadAttention(nn.Module):
     def forward(self, q, k, v, mask=None):
         
         bs = q.size(0)
+        print("bs is ", bs)
         
         # perform linear operation and split into N heads
 

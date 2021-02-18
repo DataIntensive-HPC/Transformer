@@ -41,7 +41,7 @@ def attention(q, k, v, d_k, mask=None, dropout=None):
     output = torch.matmul(scores, v)
     return output
 
-def factorized_attention(q_I, W_A, W_B, W_Bt, W_At, qt, v, d_k, mask=None, dropout=None):
+def factorized_attention(q_I, W_A, W_B, W_At, W_Bt, qt, v, d_k, mask=None, dropout=None):
 
     #Left To Right Operation
 
@@ -182,8 +182,8 @@ class FactorizedMultiHeadAttention(nn.Module):
 
         #self.W_A2 = self.W_A2.view(bs, -1, self.h, self.d_fk)
         #self.W_B2 = self.W_B2.view(bs, -1, self.h, self.d_fk)
-        W_a2 = self.W_A2.view(self.h, self.d_k,-1)
-        W_b2 = self.W_A2.view(self.h, -1, self.d_k)
+        W_a2 = self.W_A2.view(self.h, -1 , self.d_k)
+        W_b2 = self.W_A2.view(self.h, self.d_k, -1 )
 
 
         qt = torch.einsum("abc->acb", [q])
@@ -198,7 +198,7 @@ class FactorizedMultiHeadAttention(nn.Module):
         #print("q size after view is")
         #print(q.size())
 
-        scores = factorized_attention(q, W_a, W_b, W_a2, W_b2 ,qt, v, self.d_k, mask, self.dropout)
+        scores = factorized_attention(q, W_a, W_b, W_b2, W_a2 ,qt, v, self.d_k, mask, self.dropout)
 
         # concatenate heads and put through final linear layer
         concat = scores.transpose(1,2).contiguous()\

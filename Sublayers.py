@@ -79,7 +79,7 @@ def factorized_Attention(q_I, W_A, W_B, W_Bt, W_At, v, mask=None, dropout=None):
 
 
 class FactorizedMultiHeadAttention(nn.Module):
-    def __init__(self, heads, d_model, dropout = 0.1):
+    def __init__(self, heads, d_model, factorized_k=32, dropout = 0.1):
         super().__init__()
         
         self.d_model = d_model
@@ -87,8 +87,8 @@ class FactorizedMultiHeadAttention(nn.Module):
 
 
         self.h = heads
-        self.Factorized_k= 32
-        self.d_fk= self.Factorized_k // heads
+        self.Factorized_k = factorized_k
+        self.d_fk= factorized_k // heads
 
         #self.q_linear = nn.Linear(d_model, d_model)
         self.v_linear = nn.Linear(d_model, d_model)

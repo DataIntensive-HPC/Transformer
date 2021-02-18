@@ -195,7 +195,8 @@ class FactorizedMultiHeadAttention(nn.Module):
 
         q =q.view(bs, -1, self.h, self.d_k)
 
-
+        print("q size after view is")
+        print(q.size())
 
         scores = factorized_attention(q, W_a, W_b, W_a2, W_b2 ,qt, v, self.d_k, mask, self.dropout)
 

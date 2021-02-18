@@ -71,7 +71,10 @@ def factorized_attention(q_I, W_A, W_B, W_Bt, W_At, v, d_k, mask=None, dropout=N
 
 
     #Calculate IAB*Bt
-    IABBt = torch.einsum('bij,jk->bik', [IAB, W_Bt])
+    IABBt = torch.einsum('kabi,bim->kabm', [IAB, W_Bt])
+
+    print("IABBt Matrix size")
+    print(IABBt.size())
 
     #Calculate IABBt * At
     IABBtAt = torch.einsum('bij,jk->bik' , [IABBt , W_At])

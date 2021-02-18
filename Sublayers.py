@@ -97,6 +97,7 @@ def factorized_attention(q_I, W_A, W_B, W_Bt, W_At, qt, v, d_k, mask=None, dropo
         
     print(" v size")
     print(v.size())    
+
     #output = torch.matmul(scores, v)
     output = torch.einsum('kabm,kbmj->kbaj', [scores, v])
     return output
@@ -149,6 +150,9 @@ class FactorizedMultiHeadAttention(nn.Module):
         #k = self.k_linear(k).view(bs, -1, self.h, self.d_k)
         #q = self.q_linear(q).view(bs, -1, self.h, self.d_k)
         v = self.v_linear(v).view(bs, -1, self.h, self.d_k)
+
+        print("v size is")
+        print(v.size())
 
         # transpose to get dimensions bs * N * sl * d_model
         #k = k.transpose(1,2)

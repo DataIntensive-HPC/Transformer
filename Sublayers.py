@@ -41,7 +41,7 @@ def attention(q, k, v, d_k, mask=None, dropout=None):
     output = torch.matmul(scores, v)
     return output
 
-def factorized_attention(q_I, W_A, W_B, W_Bt, W_At, v, mask=None, dropout=None):
+def factorized_attention(q_I, W_A, W_B, W_Bt, W_At, v, d_k, mask=None, dropout=None):
 
     #Left To Right Operation
 

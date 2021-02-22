@@ -198,7 +198,7 @@ class FactorizedMultiHeadAttention(nn.Module):
         #print("q size after view is")
         #print(q.size())
 
-        scores = factorized_attention(q, W_a, W_b, W_b2, W_a2 ,qt, v, self.d_k, mask, self.dropout)
+        scores = factorized_attention(q, W_a, W_b, W_a2, W_b2, qt, v, self.d_k, mask, self.dropout)
 
         # concatenate heads and put through final linear layer
         concat = scores.transpose(1,2).contiguous()\

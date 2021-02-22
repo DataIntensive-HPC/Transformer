@@ -14,7 +14,7 @@ def nopeak_mask(size, opt):
 
 def create_masks(src, trg, opt):
     
-    #device= torch.device("cuda" if torch.cuda.is_available()  else "cpu")
+    device= torch.device("cuda" if torch.cuda.is_available()  else "cpu")
 
     src_mask = (src != opt.src_pad).unsqueeze(-2) #.to(device)
 
@@ -24,6 +24,7 @@ def create_masks(src, trg, opt):
         np_mask = nopeak_mask(size, opt)#.to(device)
         if trg.is_cuda:
             np_mask.cuda()
+            trg_mask.cuda() ####
         trg_mask = trg_mask & np_mask
         
     else:
